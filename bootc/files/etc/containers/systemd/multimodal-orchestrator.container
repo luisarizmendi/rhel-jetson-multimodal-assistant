@@ -1,0 +1,23 @@
+[Unit]
+Description=Multimodal Assistant orchestrator API
+After=network-online.target multimodal-data-init.service
+Wants=network-online.target
+Requires=multimodal-data-init.service
+
+[Container]
+Image=localhost/mma-orchestrator:dev
+ContainerName=multimodal-orchestrator
+Network=host
+Volume=/var/lib/multimodal-assistant:/var/lib/multimodal-assistant:Z
+EnvironmentFile=/var/lib/multimodal-assistant/config/runtime.env
+NoNewPrivileges=true
+ReadOnly=true
+Tmpfs=/tmp:rw,noexec,nosuid,size=64m
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=90
+
+[Install]
+WantedBy=multi-user.target

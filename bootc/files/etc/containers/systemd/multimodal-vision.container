@@ -1,0 +1,26 @@
+[Unit]
+Description=Multimodal Assistant TensorRT vision service
+After=network-online.target multimodal-data-init.service
+Wants=network-online.target
+Requires=multimodal-data-init.service
+
+[Container]
+Image=localhost/mma-vision:dev
+ContainerName=multimodal-vision
+Network=host
+AddDevice=/dev/video0
+AddDevice=nvidia.com/gpu=all
+Volume=/var/lib/multimodal-assistant:/var/lib/multimodal-assistant:Z
+Environment=CAMERA_DEVICE=/dev/video0
+Environment=MODEL_PATH=/var/lib/multimodal-assistant/models/vision/detector.onnx
+Environment=ENGINE_DIR=/var/lib/multimodal-assistant/engines/vision
+Environment=DETECTION_INTERVAL_MS=100
+SecurityLabelDisable=true
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target

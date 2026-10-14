@@ -1,0 +1,12 @@
+[Unit]
+Description=Create persistent multimodal assistant directories
+After=local-fs.target
+RequiresMountsFor=/var/lib
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/mma-init-data
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

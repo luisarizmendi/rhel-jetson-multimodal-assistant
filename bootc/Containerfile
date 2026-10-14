@@ -1,0 +1,13 @@
+FROM quay.io/redhat-user-workloads/jetpack-for-rhel-tenant/rhel-102-bootc:7.2.1_6.12.0-211.61.1_100526151449
+
+RUN dnf -y install podman fuse-overlayfs curl jq python3 && dnf clean all
+
+COPY files/ /
+
+RUN install -d -m 0750 -o root -g root /var/lib/multimodal-assistant \
+    /var/lib/multimodal-assistant/{models,engines,config,data,cache,logs} && \
+    chmod 0755 /usr/local/bin/mma-* && \
+    systemctl enable multimodal-data-init.service
+
+# Application images are versioned and deployed independently. Do not COPY model
+# weights or hardware-specific TensorRT engines into this immutable image.

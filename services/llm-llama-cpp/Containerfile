@@ -1,0 +1,8 @@
+# Build llama.cpp for aarch64 with the CUDA backend in a JetPack-matched image.
+FROM nvcr.io/nvidia/l4t-cuda:r39.2.1-devel
+RUN apt-get update && apt-get install -y --no-install-recommends git cmake build-essential && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth=1 https://github.com/ggml-org/llama.cpp /src/llama.cpp && \
+    cmake -S /src/llama.cpp -B /src/llama.cpp/build -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build /src/llama.cpp/build -j"$(nproc)"
+EXPOSE 8081
+ENTRYPOINT ["/src/llama.cpp/build/bin/llama-server"]

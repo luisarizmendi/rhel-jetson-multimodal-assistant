@@ -1,0 +1,8 @@
+# Not used by the default deployment. Build only after the host validation
+# confirms a supported JetPack/CUDA/TensorRT tuple.
+FROM nvcr.io/nvidia/l4t-cuda:r39.2.1-devel
+WORKDIR /workspace
+RUN apt-get update && apt-get install -y --no-install-recommends git cmake ninja-build python3 python3-pip && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth=1 https://github.com/NVIDIA/TensorRT-Edge-LLM.git /workspace/TensorRT-Edge-LLM
+COPY README.md /workspace/README.md
+CMD ["bash"]
